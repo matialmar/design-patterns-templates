@@ -37,7 +37,7 @@ The repository includes templates for the following design patterns:
 - [ ] Proxy
 
 3. **Behavioral Patterns**
-- [ ] Observer
+- [x] Observer
 - [ ] Strategy
 - [ ] Command
 - [ ] Chain of Responsibility
