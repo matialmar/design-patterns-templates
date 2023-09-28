@@ -6,7 +6,6 @@
 class Observer{
     friend class Subject;
     public:
-        Observer(){};
         virtual ~Observer(){};
 
     private:
@@ -14,8 +13,6 @@ class Observer{
 };
 
 class Subject{
-    typedef std::shared_ptr<Observer> ObserverPtr; //Beware one Observer can be in multiple Types 
-
     public:
         enum MessageType{
             TYPE1 = 0,
@@ -27,16 +24,16 @@ class Subject{
 
         Subject(){
             for(int type = MessageType::TYPE1; type < MessageType::LAST; type++ ){
-                _observers.emplace(static_cast<MessageType>(type),std::forward_list<ObserverPtr>());
+                _observers.emplace(static_cast<MessageType>(type),std::forward_list<std::shared_ptr<Observer>>());
             }
         };
 
-        void subscribe(MessageType msg_type, ObserverPtr obs){
+        void subscribe(MessageType msg_type, std::shared_ptr<Observer> obs){
             _observers[msg_type].push_front(obs);
             _observers[MessageType::ALL].push_front(obs);
         };
 
-        void unsubscribe(MessageType msg_type, ObserverPtr obs){
+        void unsubscribe(MessageType msg_type, std::shared_ptr<Observer> obs){
             _observers[msg_type].remove(obs);
         };
 
@@ -53,7 +50,7 @@ class Subject{
         };
 
         private:
-            std::unordered_map<MessageType, std::forward_list<ObserverPtr>> _observers;
+            std::unordered_map<MessageType, std::forward_list<std::shared_ptr<Observer>>> _observers;
 
 };
 
