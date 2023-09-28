@@ -37,20 +37,30 @@ class Subject{
             _observers[msg_type].remove(obs);
         };
 
-        void notify(MessageType msg_type){
-            for(auto obs : _observers[msg_type]){
+        void notify(MessageType msg_type) const {
+            std::unordered_map<MessageType, std::forward_list<std::shared_ptr<Observer>>, MessageTypetHash>::const_iterator it = this->_observers.find(msg_type);
+            for(auto obs : it->second){
                 obs->update();
             }
         };
 
-        void notifyAll(){
-            for(auto obs : _observers[MessageType::ALL]){
+        void notifyAll() const {
+            std::unordered_map<MessageType, std::forward_list<std::shared_ptr<Observer>>, MessageTypetHash>::const_iterator it = this->_observers.find(MessageType::ALL);
+            for(auto obs : it->second){
                 obs->update();
             }
         };
 
         private:
-            std::unordered_map<MessageType, std::forward_list<std::shared_ptr<Observer>>> _observers;
+            struct MessageTypetHash
+            {
+                std::size_t operator()(const MessageType &event) const
+                {
+                    return static_cast<unsigned int>(event);
+                }
+            };
+
+            std::unordered_map<MessageType, std::forward_list<std::shared_ptr<Observer>>, MessageTypetHash> _observers;
 
 };
 
