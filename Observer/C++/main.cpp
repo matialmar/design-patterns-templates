@@ -43,14 +43,7 @@ class Subject{
                 obs->update();
             }
         };
-
-        void notifyAll() const {
-            std::unordered_map<MessageType, std::forward_list<std::shared_ptr<Observer>>, MessageTypetHash>::const_iterator it = this->_observers.find(MessageType::ALL);
-            for(auto obs : it->second){
-                obs->update();
-            }
-        };
-
+        
         private:
             struct MessageTypetHash
             {
