@@ -2,7 +2,7 @@
 #include <forward_list>
 #include <unordered_map>
 #include <memory>
-
+#include <algorithm>
 class Observer{
     friend class Subject;
     public:
@@ -30,7 +30,11 @@ class Subject{
 
         void subscribe(MessageType msg_type, std::shared_ptr<Observer> obs){
             _observers[msg_type].push_front(obs);
-            _observers[MessageType::ALL].push_front(obs);
+
+            //Check if is in _observers[MessageType::ALL]
+            if(std::find(this->_observers[MessageType::ALL].begin(), this->_observers[MessageType::ALL].end(), obs) == this->_observers[MessageType::ALL].end()){
+                _observers[MessageType::ALL].push_front(obs);
+            }
         };
 
         void unsubscribe(MessageType msg_type, std::shared_ptr<Observer> obs){
@@ -87,5 +91,5 @@ int main(){
     std::cout << "Subject::notify(TYPE3):" << std::endl;
     sub.notify(Subject::MessageType::TYPE3);
     std::cout << "Subject::notifyAll():" << std::endl;
-    sub.notifyAll();
+    sub.notify(Subject::MessageType::ALL);
 }
