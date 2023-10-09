@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <memory>
 #include <algorithm>
+
 class Observer{
     friend class Subject;
     public:
@@ -29,12 +30,12 @@ class Subject{
         };
 
         void subscribe(MessageType msg_type, std::shared_ptr<Observer> obs){
-            _observers[msg_type].push_front(obs);
+            if(msg_type != MessageType::ALL)
+                this->_observers[msg_type].push_front(obs);
+            this->_observers[MessageType::ALL].push_front(obs);
 
-            //Check if is in _observers[MessageType::ALL]
-            if(std::find(this->_observers[MessageType::ALL].begin(), this->_observers[MessageType::ALL].end(), obs) == this->_observers[MessageType::ALL].end()){
-                _observers[MessageType::ALL].push_front(obs);
-            }
+            this->_observers[msg_type].unique();
+            this->_observers[MessageType::ALL].unique();
         };
 
         void unsubscribe(MessageType msg_type, std::shared_ptr<Observer> obs){
